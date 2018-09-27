@@ -13,7 +13,7 @@ const int forward = 16;
 const int reverse = 17;
 
 void handleRoot() {
-  ESPTemplateProcessor(server).send(String("/index.html"), noopProcessor);
+  ESPTemplateProcessor(server).send(String("/index.html"), noopProcessor, '_');
 }
 
 String noopProcessor(const String& key) {
@@ -27,7 +27,7 @@ void handleFiles() {
 void handleThrottle() {
   
   int throttleValue = server.arg("value").toInt(); 
-  Serial.println("/throtle value = " + throttleValue);
+  Serial.println(server.arg("value"));
   if( throttleValue == 0 ){
     //brake
     ledcWrite(0, 0);
