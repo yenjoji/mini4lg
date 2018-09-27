@@ -2,19 +2,46 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include "ESPTemplateProcessor.h"
 
 const char* ssid = "esp32ap";
 const char* password = "esp32apesp32ap";
 
 WebServer server(80);
 
-const int led = 16;
+const int forward = 16;
+const int reverse = 17;
 
 void handleRoot() {
-//  digitalWrite(led, !digitalRead(led));
-  server.send(200, "text/plain", "hello from esp8266!");
-//  digitalWrite(led, 0);
-  ledcWrite(0, random(255));
+  ESPTemplateProcessor(server).send(String("/index.html"), noopProcessor);
+}
+
+String noopProcessor(const String& key) {
+  return "";
+}
+
+void handleFiles() {
+  ESPTemplateProcessor(server).send(String(server.arg("file")), noopProcessor);
+}
+
+void handleThrottle() {
+  
+  int throttleValue = server.arg("value").toInt(); 
+  Serial.println("/throtle value = " + throttleValue);
+  if( throttleValue == 0 ){
+    //brake
+    ledcWrite(0, 0);
+    ledcWrite(1, 0);
+  }else if(throttleValue < 0){
+    //fwd
+    ledcWrite(0, 0);
+    ledcWrite(1, throttleValue);
+  }else{
+    //rev
+    ledcWrite(0, throttleValue);
+    ledcWrite(1, 0);
+  }
+  server.send(200, "text/plain", "OK");
 }
 
 void handleNotFound() {
@@ -33,10 +60,14 @@ void handleNotFound() {
 }
 
 void setup(void) {
-//  pinMode(led, OUTPUT);
-//  digitalWrite(led, HIGH);
+  SPIFFS.begin();
+  
   ledcSetup(0, 5000, 8);
-  ledcAttachPin(led, 0);
+  ledcAttachPin(forward, 0);
+
+  ledcSetup(1, 5000, 8);
+  ledcAttachPin(reverse, 1);
+
   Serial.begin(115200);
 
   WiFi.softAP(ssid, password);
@@ -51,9 +82,9 @@ void setup(void) {
 
   server.on("/", handleRoot);
 
-  server.on("/inline", []() {
-    server.send(200, "text/plain", "this works as well");
-  });
+  server.on("/throttle", handleThrottle);
+
+  server.on("/files", handleFiles);
 
   server.onNotFound(handleNotFound);
 

@@ -3,59 +3,39 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
     <style>
         div {
             margin: 5px;
         }
     </style>
     <title>mini4wd</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
-        <form>
-            <div class="raw">
-                <div class="col"></div>
-                <div class="col">
-                    <div class="raw"><button type="button" class="btn btn-lg btn-block btn-primary" value="255">5</button></div>
-                    <div class="raw"><button type="button" class="btn btn-lg btn-block btn-primary" value="204">4</button></div>
-                    <div class="raw"><button type="button" class="btn btn-lg btn-block btn-primary" value="153">3</button></div>
-                    <div class="raw"><button type="button" class="btn btn-lg btn-block btn-primary" value="102">2</button></div>
-                    <div class="raw"><button type="button" class="btn btn-lg btn-block btn-primary" value="51">1</button></div>
-                </div>
-            </div>
-            <div class="col"></div>
-            <div class="col">
-                <div class="raw"><button type="button" class="btn btn-lg btn-block btn-danger" value="0">0</button></div>
-            </div>
-            <div class="col"></div>
-            <div class="col">
-                <div class="raw"><button type="button" class="btn btn-lg btn-block btn-dark" value="-51">1</button></div>
-                <div class="raw"><button type="button" class="btn btn-lg btn-block btn-dark" value="-102">2</button></div>
-                <div class="raw"><button type="button" class="btn btn-lg btn-block btn-dark" value="-153">3</button></div>
-            </div>
-        </form>
-    </div>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <form>
+        <button type="button" class="btn btn-lg btn-block btn-primary" value="255">5</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-primary" value="204">4</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-primary" value="153">3</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-primary" value="102">2</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-primary" value="51">1</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-danger" value="0">0</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-dark" value="-51">1</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-dark" value="-102">2</button><br/>
+        <button type="button" class="btn btn-lg btn-block btn-dark" value="-153">3</button><br/>
+    </form>
+
     <script>
-        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+        var buttons = document.getElementsByTagName('button');
+        Array.prototype.forEach.call(buttons, function(button) {
+            button.addEventListener('click', function() {
+                console.log(this.value);
+                fetch("api/throttle/" + this.value)
+                    .then(function(response) {
+                        return response;
+                    });
+            })
+        });
     </script>
-    <script>
-        $('button').on('click', function() {
-            console.log(this.value);
-            $.get("api/throttle/" + this.value);
-        })
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </body>
 
 </html>
