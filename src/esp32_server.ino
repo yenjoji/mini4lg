@@ -35,7 +35,7 @@ void handleThrottle() {
   }else if(throttleValue < 0){
     //fwd
     ledcWrite(0, 0);
-    ledcWrite(1, throttleValue);
+    ledcWrite(1, abs(throttleValue));
   }else{
     //rev
     ledcWrite(0, throttleValue);
